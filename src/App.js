@@ -24,12 +24,21 @@ function App() {
     ]);
 
     const [title, setTitle] = useState('');
-    const bodyInputRef = useRef();
+    const [body, setBody] = useState('');
+
+    // const bodyInputRef = useRef();
 
     const addNewPost = (e) => {
         e.preventDefault();
-        console.log(title);
-        console.log(bodyInputRef.current.value);
+        // console.log(bodyInputRef.current.value);
+        const newPost = {
+            id: Date.now(),
+            title,
+            body,
+        };
+        setPosts([...posts, newPost]);
+        setTitle('');
+        setBody('');
     };
 
     return (
@@ -42,9 +51,15 @@ function App() {
                     type='text'
                     placeholder='Название поста'
                 ></MyInput>
-                {/* Неуправляемый / неконтролируемый */}
+                {/* Неуправляемый / неконтролируемый
                 <MyInput
                     ref={bodyInputRef}
+                    type='text'
+                    placeholder='Описание поста'
+                ></MyInput> */}
+                <MyInput
+                    value={body} // двусторонее
+                    onChange={(e) => setBody(e.target.value)} // связывание
                     type='text'
                     placeholder='Описание поста'
                 ></MyInput>
