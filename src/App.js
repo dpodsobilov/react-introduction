@@ -1,71 +1,68 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import './styles/App.css';
 import { PostList } from './components/PostList';
-import { MyButton } from './components/UI/button/MyButton';
-import { MyInput } from './components/UI/input/MyInput';
+import { PostForm } from './components/PostForm';
+import { MySelect } from './components/UI/select/MySelect';
 
 function App() {
     const [posts, setPosts] = useState([
         {
             id: 1,
-            title: 'JavaScript',
-            body: 'Description',
+            title: 'aa',
+            body: 'bb',
         },
         {
             id: 2,
-            title: 'JavaScript 2',
+            title: 'dd 2',
             body: 'Description',
         },
         {
             id: 3,
-            title: 'JavaScript 3',
-            body: 'Description',
+            title: 'cc 3',
+            body: 'a',
         },
     ]);
 
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
+    const [selectedSort, setSelectedSort] = useState('');
 
-    // const bodyInputRef = useRef();
-
-    const addNewPost = (e) => {
-        e.preventDefault();
-        // console.log(bodyInputRef.current.value);
-        const newPost = {
-            id: Date.now(),
-            title,
-            body,
-        };
+    // функция обратного вызова
+    const createPost = (newPost) => {
         setPosts([...posts, newPost]);
-        setTitle('');
-        setBody('');
+    };
+
+    const removePost = (post) => {
+        setPosts(posts.filter((p) => p.id !== post.id));
+    };
+
+    const sortPosts = (sort) => {
+        setSelectedSort(sort);
+        setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
     };
 
     return (
         <div className='App'>
-            <form>
-                {/* Управляемый компонент */}
-                <MyInput
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    type='text'
-                    placeholder='Название поста'
-                ></MyInput>
-                {/* Неуправляемый / неконтролируемый
-                <MyInput
-                    ref={bodyInputRef}
-                    type='text'
-                    placeholder='Описание поста'
-                ></MyInput> */}
-                <MyInput
-                    value={body} // двусторонее
-                    onChange={(e) => setBody(e.target.value)} // связывание
-                    type='text'
-                    placeholder='Описание поста'
-                ></MyInput>
-                <MyButton onClick={addNewPost}>Создать пост</MyButton>
-            </form>
-            <PostList posts={posts} title='Посты про JS' />
+            <PostForm create={createPost} />
+            <hr style={{ margin: '15px' }} />
+            <div>
+                <MySelect
+                    value={selectedSort}
+                    onChange={sortPosts}
+                    defaultValue='Сортировка'
+                    options={[
+                        { value: 'title', name: 'По названию' },
+                        { value: 'body', name: 'По описанию' },
+                    ]}
+                />
+            </div>
+            {posts.length ? (
+                <PostList
+                    remove={removePost}
+                    posts={posts}
+                    title='Посты про JS'
+                />
+            ) : (
+                <h1 style={{ textAlign: 'center' }}>Посты не найдены!</h1>
+            )}
         </div>
     );
 }
